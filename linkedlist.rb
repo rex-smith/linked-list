@@ -8,11 +8,16 @@ class LinkedList
 
   def append(value)
     new_node = Node.new(value)
+
     if !@head
+      puts "Head was nil"
       @head = new_node
     elsif !@tail
+      puts "Tail was nil, not head"
       @tail = new_node
+      @head.next_node = @tail
     else
+      puts "Neither Nil"
       @tail.next_node = new_node
     end
     @tail = new_node
@@ -20,6 +25,9 @@ class LinkedList
 
   def prepend(value)
     new_node = Node.new(value, @head)
+    if !@tail
+      @tail = @head
+    end
     @head = new_node
   end
 
@@ -38,7 +46,7 @@ class LinkedList
   def at(index)
     current_node = @head
     i = 0;
-    while i<= index
+    while i < index
       current_node = current_node.next_node
       i += 1
     end
@@ -63,6 +71,7 @@ class LinkedList
       if current_node.data == value
         contains = true
       end
+      current_node = current_node.next_node
     end
     contains
   end
@@ -71,10 +80,10 @@ class LinkedList
     counter = 0
     current_node = @head
     while current_node != nil
-      counter += 1
       if current_node.data == value
         return counter
       end
+      counter += 1
     end
     return nil
   end
@@ -83,9 +92,10 @@ class LinkedList
     current_node = @head
     linked_string = ''
     while current_node != nil
-      linked_string = linked_string + "( #{current_node.value} ) -> "
+      linked_string = linked_string + "( #{current_node.data} ) -> "
+      current_node = current_node.next_node
     end
-    linked_string = linked_string + current_node
+    linked_string = linked_string + "nil"
     linked_string
   end
 
@@ -94,13 +104,19 @@ class LinkedList
     # Initialize new node
     new_node = Node.new(value)
     # Find the index
+    if index == 0
+      prepend(value)
+      return
+    end
     current_node = @head
     previous_node = nil
-    index.times do 
+    counter = 1
+    while counter <= index
       previous_node = current_node
       current_node = current_node.next_node
+      counter +=1
     end
-    
+
     # Make previous item's next_node equal to the new node 
     # and the new node's next_node equal to the previous next node
     new_node.next_node = current_node
@@ -131,17 +147,17 @@ end
 
 
 # TESTING
-
+puts "SIMPLE TESTING"
 list = LinkedList.new()
-# puts list
+puts list
 list.append('last')
-# puts list
+puts list
 list.prepend('first')
 puts list
 puts "Size: #{list.size}"
-puts "Head: #{list.head.value}"
-puts "Tail: #{list.tail.value}"
-puts "At 1: #{list.at(1).value}"
+puts "Head: #{list.head.data}"
+puts "Tail: #{list.tail.data}"
+puts "At 1: #{list.at(1).data}"
 list.pop
 puts list
 puts "Contains 'first': #{list.contains?('first')}"
@@ -152,3 +168,25 @@ list.insert_at('new_last', 2)
 puts list
 list.remove_at(1)
 puts list
+puts
+
+# ADVANCED TESTING
+puts "ADVANCED TESTING"
+adList = LinkedList.new()
+adList.prepend('boylston')
+puts adList
+adList.prepend('weymouth')
+puts adList
+adList.append('peabody')
+puts adList
+adList.insert_at('brookline', 2)
+puts adList
+adList.remove_at(1)
+puts adList
+adList.append('quincy')
+adList.append('worcester')
+adList.prepend('manchester')
+puts adList
+puts "Size: #{adList.size}"
+puts "Head: #{adList.head.data}"
+puts "Tail: #{adList.tail.data}"
